@@ -15,12 +15,15 @@ void print_usage(char *argv[]) {
 }
 
 int main(int argc, char *argv[]) {
-  int dbfd = 0;
   int c = 0; // default value for the switch case
   char *filepath = NULL; //default address for filepath ptr
   bool newfile = false; //default val for -n flag
   
-  while ((c = getopt(argc, argv, "nf:") != -1)){
+  int dbfd = 0; // default db fd value
+  struct dbheader_t *header = NULL; //create dbheader struct as pointer and null it
+  struct employee_t *employees = NULL;
+
+  while ((c = getopt(argc, argv, "nf:")) != -1){
     switch(c){
       case 'n':
         newfile = true;
@@ -50,16 +53,28 @@ int main(int argc, char *argv[]) {
       printf("Unable to create new db file.\n");
       return -1;
     }
+    if(create_db_header(dbfd, &header) == STATUS_ERROR){
+      printf("Failed to create DB header.\n");
+      return -1;
+    }
   }else{
     dbfd = open_db_file(filepath);
     if(dbfd == STATUS_ERROR){
       printf("Unable to open db file.\n");
       return -1;
     }
+    if(validate_db_header(dbfd, &header) == STATUS_ERROR){
+      printf("Failed to valdate \"%s\" header.\n", filepath);
+      return -1;
+    } 
   }
 
-  printf("Filepath: %c\n", *filepath);
-  printf("New file: %b\n", newfile);
+  if(newfile){
+    printf("New file: %b\n", newfile);
+  }
+  printf("Filepath: %s\n", filepath);
+
+  output_file(dbfd, header, employees);
 
   return 0;
 }

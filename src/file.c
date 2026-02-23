@@ -12,7 +12,7 @@ int fd = -1; // default value for fd to prevent initialization of bad file descr
 int create_db_file(char *filename) {
   fd = open(filename, O_RDONLY);
   if(fd != -1){
-    printf("%c already exists.", *filename);
+    printf("File: \"%s\" already exists.\n", filename);
     return STATUS_ERROR;
   }
 
@@ -25,12 +25,6 @@ int create_db_file(char *filename) {
 }
 
 int open_db_file(char *filename) {
-  fd = open(filename, O_RDONLY);
-  if(fd != -1){
-    printf("%c already exists.", *filename);
-    return STATUS_ERROR;
-  }
-
   fd = open(filename, O_RDWR);
   if(fd == 1){
     perror("open");
