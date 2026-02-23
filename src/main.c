@@ -9,9 +9,13 @@
 #include "parse.h"
 
 void print_usage(char *argv[]) {
+  printf("Usage: %s -n -f <db file>\n", argv[0]);
+  printf("\t -f (required) /path/to/file\n");
+  printf("\t -n create new db file\n");
 }
 
 int main(int argc, char *argv[]) {
+  int dbfd = 0;
   int c = 0; // default value for the switch case
   char *filepath = NULL; //default address for filepath ptr
   bool newfile = false; //default val for -n flag
@@ -26,13 +30,14 @@ int main(int argc, char *argv[]) {
         break;
       case '?':
         printf("Unknown option %c\n", c);
+        break;
       default:
         return -1;
     }
   }
 
   if(filepath == NULL){
-    printf("Filepath required.");
+    printf("Filepath required.\n");
     print_usage(argv);
     
     return 0;
@@ -40,12 +45,21 @@ int main(int argc, char *argv[]) {
 
 
   if(newfile){
-    create_db_file(filepath);
-
+    dbfd = create_db_file(filepath);
+    if(dbfd == STATUS_ERROR){
+      printf("Unable to create new db file.\n");
+      return -1;
+    }
+  }else{
+    dbfd = open_db_file(filepath);
+    if(dbfd == STATUS_ERROR){
+      printf("Unable to open db file.\n");
+      return -1;
+    }
   }
 
-  printf("New file: %b\n", newfile);
   printf("Filepath: %c\n", *filepath);
+  printf("New file: %b\n", newfile);
 
   return 0;
 }

@@ -7,7 +7,7 @@
 #include "common.h"
 #include "file.h"
 
-int fd = -1;
+int fd = -1; // default value for fd to prevent initialization of bad file descriptor
 
 int create_db_file(char *filename) {
   fd = open(filename, O_RDONLY);
