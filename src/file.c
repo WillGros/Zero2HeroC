@@ -7,17 +7,17 @@
 #include "common.h"
 #include "file.h"
 
-int fd = -1; // default value for fd to prevent initialization of bad file descriptor
-
 int create_db_file(char *filename) {
-  fd = open(filename, O_RDONLY);
+  int fd = open(filename, O_RDWR, 0644);
   if(fd != -1){
+    close(fd);
     printf("File: \"%s\" already exists.\n", filename);
     return STATUS_ERROR;
   }
 
-  fd = open(filename, O_RDWR | O_CREAT, 0664);
-  if(fd == 1){
+  fd = open(filename, O_RDWR | O_CREAT, 0644);
+  if(fd == -1){
+    close(fd);
     perror("open");
     return STATUS_ERROR;
   }
@@ -25,8 +25,9 @@ int create_db_file(char *filename) {
 }
 
 int open_db_file(char *filename) {
-  fd = open(filename, O_RDWR);
-  if(fd == 1){
+  int fd = open(filename, O_RDWR, 0644);
+  if(fd == -1){
+    close(fd);
     perror("open");
     return STATUS_ERROR;
   }

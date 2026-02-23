@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
   char *filepath = NULL; //default address for filepath ptr
   bool newfile = false; //default val for -n flag
   
-  int dbfd = 0; // default db fd value
+  int dbfd = -1; // default db fd value
   struct dbheader_t *header = NULL; //create dbheader struct as pointer and null it
   struct employee_t *employees = NULL;
 
@@ -56,6 +56,8 @@ int main(int argc, char *argv[]) {
     if(create_db_header(dbfd, &header) == STATUS_ERROR){
       printf("Failed to create DB header.\n");
       return -1;
+    }else{
+      printf("created header\n");
     }
   }else{
     dbfd = open_db_file(filepath);
@@ -66,6 +68,8 @@ int main(int argc, char *argv[]) {
     if(validate_db_header(dbfd, &header) == STATUS_ERROR){
       printf("Failed to valdate \"%s\" header.\n", filepath);
       return -1;
+    }else{
+      printf("Header successfully validated.\n");
     } 
   }
 

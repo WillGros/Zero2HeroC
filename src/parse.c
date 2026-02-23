@@ -24,7 +24,7 @@ int read_employees(int fd, struct dbheader_t *dbhdr, struct employee_t **employe
 }
 
 int output_file(int fd, struct dbheader_t *dbhdr, struct employee_t *employees) {
-  
+  printf("fd: %d\n", fd); 
   if(fd < 0){ // validate file descriptor of db file
     printf("Bad file descriptor.\n");
     return STATUS_ERROR;
@@ -65,7 +65,7 @@ int validate_db_header(int fd, struct dbheader_t **headerOut) {
   header->magic = ntohl(header->magic);
   header->filesize = ntohl(header->filesize);
 
-  if(header->version != 1){
+  if(header->version != 0x1){
     printf("Impropper header version.\n");
     free(header);
     return STATUS_ERROR;
@@ -89,11 +89,12 @@ int validate_db_header(int fd, struct dbheader_t **headerOut) {
 
 int create_db_header(int fd, struct dbheader_t **headerOut) {
   struct dbheader_t *header = calloc(1, sizeof(struct dbheader_t)); // create pointer db header struct in heap
-  if(header == NULL){ //check heap allocation
+  if(header == -1){ //check heap allocation
     printf("malloc failed to create db header\n"); //return error if malloc fails
     return STATUS_ERROR;
   }
-  header->version = 1;  //initialize header values
+
+  header->version = 0x1;  //initialize header values
   header->count = 0;
   header->magic = HEADER_MAGIC;
   header->filesize = sizeof(struct dbheader_t);
