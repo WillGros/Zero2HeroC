@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 
 
   if(newfile){
-    create_db_file(*filepath);
+    create_db_file(filepath);
 
   }
 

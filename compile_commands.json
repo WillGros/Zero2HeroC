@@ -1,0 +1,41 @@
+[
+  {
+    "file": "src/file.c",
+    "arguments": [
+      "gcc",
+      "-c",
+      "src/file.c",
+      "-o",
+      "obj/file.o",
+      "-Iinclude"
+    ],
+    "directory": "/home/willyg/Zero2HeroC",
+    "output": "obj/file.o"
+  },
+  {
+    "file": "src/main.c",
+    "arguments": [
+      "gcc",
+      "-c",
+      "src/main.c",
+      "-o",
+      "obj/main.o",
+      "-Iinclude"
+    ],
+    "directory": "/home/willyg/Zero2HeroC",
+    "output": "obj/main.o"
+  },
+  {
+    "file": "src/parse.c",
+    "arguments": [
+      "gcc",
+      "-c",
+      "src/parse.c",
+      "-o",
+      "obj/parse.o",
+      "-Iinclude"
+    ],
+    "directory": "/home/willyg/Zero2HeroC",
+    "output": "obj/parse.o"
+  }
+]

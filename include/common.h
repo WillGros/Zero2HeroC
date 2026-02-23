@@ -4,5 +4,5 @@
 #define STATUS_ERROR   -1
 #define STATUS_SUCCESS 0
 
-#endif
+#endif //COMMON_H
 

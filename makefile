@@ -19,5 +19,3 @@ $(TARGET): $(OBJ)
 obj/%.o : src/%.c
 	gcc -c $< -o $@ -Iinclude
 
-
-
