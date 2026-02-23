@@ -23,8 +23,7 @@ int read_employees(int fd, struct dbheader_t *dbhdr, struct employee_t **employe
 
 }
 
-int output_file(int fd, struct dbheader_t *dbhdr, struct employee_t *employees) {
-  printf("fd: %d\n", fd); 
+int output_file(int fd, struct dbheader_t *dbhdr) {
   if(fd < 0){ // validate file descriptor of db file
     printf("Bad file descriptor.\n");
     return STATUS_ERROR;
@@ -40,7 +39,7 @@ int output_file(int fd, struct dbheader_t *dbhdr, struct employee_t *employees) 
   write(fd, dbhdr, sizeof(struct dbheader_t));
 
   return STATUS_SUCCESS;
-}	
+}
 
 int validate_db_header(int fd, struct dbheader_t **headerOut) {
   if(fd < 0){ // validate file descriptor of db file

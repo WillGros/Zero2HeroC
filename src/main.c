@@ -46,7 +46,11 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
-
+  if(newfile){
+    printf("New file: %b\n", newfile);
+  }
+  printf("Filepath: %s\n", filepath);
+  
   if(newfile){
     dbfd = create_db_file(filepath);
     if(dbfd == STATUS_ERROR){
@@ -57,6 +61,7 @@ int main(int argc, char *argv[]) {
       printf("Failed to create DB header.\n");
       return -1;
     }else{
+      output_file(dbfd, header);
       printf("created header\n");
     }
   }else{
@@ -72,13 +77,6 @@ int main(int argc, char *argv[]) {
       printf("Header successfully validated.\n");
     } 
   }
-
-  if(newfile){
-    printf("New file: %b\n", newfile);
-  }
-  printf("Filepath: %s\n", filepath);
-
-  output_file(dbfd, header, employees);
 
   return 0;
 }
