@@ -61,8 +61,7 @@ int main(int argc, char *argv[]) {
       printf("Failed to create DB header.\n");
       return -1;
     }else{
-      output_file(dbfd, header);
-      printf("created header\n");
+      output_file(dbfd, header, employees);
     }
   }else{
     dbfd = open_db_file(filepath);
