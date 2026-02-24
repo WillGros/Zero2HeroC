@@ -88,11 +88,12 @@ int main(int argc, char *argv[]) {
     header->count++;
     employees = realloc(employees, header->count*(sizeof(struct employee_t)));
 
+    printf("%d\n", header->count);
     if(add_employee(header, employees, addstring) == STATUS_ERROR){
       printf("Failed to add employees.\n");
       return -1;
     }
-
+    printf("%s, %s, %d", employees[header->count-1].name, employees[header->count-1].address, employees[header->count-1].hours);
   }
 
   output_file(dbfd, header, employees);
