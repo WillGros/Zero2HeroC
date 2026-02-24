@@ -12,6 +12,10 @@
 #include "parse.h"
 
 void list_employees(struct dbheader_t *dbhdr, struct employee_t *employees) {
+  if(dbhdr == NULL || employees == NULL){
+    printf("List employees recieved a NULL pointer.\n");
+    return;
+  }
   int i = 0;
   for(; i < dbhdr->count; i++){
     printf("(%d) %s\n  - Address: %s\n  - Hours: %d\n", (i+1), employees[i].name, employees[i].address, employees[i].hours);
