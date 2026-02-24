@@ -77,5 +77,12 @@ int main(int argc, char *argv[]) {
     } 
   }
 
+  if(read_employees(dbfd, header, &employees) == STATUS_ERROR){
+    printf("Unable to read employees.\n");
+    return -1;
+  }
+
+  output_file(dbfd, header, employees);
+  
   return 0;
 }

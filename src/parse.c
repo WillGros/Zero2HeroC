@@ -11,16 +11,36 @@
 #include "common.h"
 #include "parse.h"
 
-// void list_employees(struct dbheader_t *dbhdr, struct employee_t *employees) {
-//
-// }
-//
-// int add_employee(struct dbheader_t *dbhdr, struct employee_t *employees, char *addstring) {
-//
-// }
+void list_employees(struct dbheader_t *dbhdr, struct employee_t *employees) {
+
+}
+
+int add_employee(struct dbheader_t *dbhdr, struct employee_t *employees, char *addstring) {
+  
+}
 
 int read_employees(int fd, struct dbheader_t *dbhdr, struct employee_t **employeesOut) {
+  if(fd < 0){
+    printf("Bad file descriptor.\n");
+    return STATUS_ERROR;
+  }
 
+  int eCount = dbhdr->count;
+  struct employee_t *employees = calloc(eCount, sizeof(struct employee_t));
+  if(employees == -1){
+    printf("Malloc failed.\n");
+    return STATUS_ERROR;
+  }
+
+  read(fd, employees, eCount*sizeof(struct employee_t));
+
+  int i = 0;
+  for(; i < eCount; i++){
+    employees[i].hours = ntohl(employees[i].hours);
+  }
+
+  *employeesOut = employees;
+  return STATUS_SUCCESS;
 }
 
 int output_file(int fd, struct dbheader_t *dbhdr, struct employee_t *employees) {
