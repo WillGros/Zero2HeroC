@@ -16,7 +16,18 @@ void list_employees(struct dbheader_t *dbhdr, struct employee_t *employees) {
 }
 
 int add_employee(struct dbheader_t *dbhdr, struct employee_t *employees, char *addstring) {
-  
+  char *name = strtok(addstring, ",");
+  char *address = strtok(NULL, ",");
+  char *hours = strtok(NULL, ",");
+
+  strncpy(employees[dbhdr->count-1].name, name, sizeof(employees[dbhdr->count-1].name));
+
+  strncpy(employees[dbhdr->count-1].address, address, sizeof(employees[dbhdr->count-1].address));
+
+  employees[dbhdr->count-1].hours = atoi(hours);
+
+  printf("name: %s, address: %s, hours: %s.\n", name, address, hours);
+  return STATUS_SUCCESS;
 }
 
 int read_employees(int fd, struct dbheader_t *dbhdr, struct employee_t **employeesOut) {
@@ -58,6 +69,11 @@ int output_file(int fd, struct dbheader_t *dbhdr, struct employee_t *employees) 
 
   write(fd, dbhdr, sizeof(struct dbheader_t));
 
+  int i = 0;
+  for(; i < dbhdr->count; i++){
+    employees[i].hours = htonl(employees[i].hours);
+    write(fd, &employees[i], sizeof(struct employee_t));
+  }
   return STATUS_SUCCESS;
 }
 
@@ -84,8 +100,8 @@ int validate_db_header(int fd, struct dbheader_t **headerOut) {
   header->magic = ntohl(header->magic);
   header->filesize = ntohl(header->filesize);
 
-  if(header->version != 0x1){
-    printf("Impropper header version.\n");
+  if(header->version != HEADER_VERSION){
+        printf("Impropper header version.\n");
     free(header);
     return STATUS_ERROR;
   }
@@ -114,7 +130,7 @@ int create_db_header(struct dbheader_t **headerOut) {
     return STATUS_ERROR;
   }
 
-  header->version = 0x1;  //initialize header values
+  header->version = HEADER_VERSION;  //initialize header values
   header->count = 0;
   header->magic = HEADER_MAGIC;
   header->filesize = sizeof(struct dbheader_t);

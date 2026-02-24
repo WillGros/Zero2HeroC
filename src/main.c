@@ -17,19 +17,23 @@ void print_usage(char *argv[]) {
 int main(int argc, char *argv[]) {
   int c = 0; // default value for the switch case
   char *filepath = NULL; //default address for filepath ptr
+  char *addstring = NULL;
   bool newfile = false; //default val for -n flag
   
   int dbfd = -1; // default db fd value
   struct dbheader_t *header = NULL; //create dbheader struct as pointer and null it
   struct employee_t *employees = NULL;
 
-  while ((c = getopt(argc, argv, "nf:")) != -1){
+  while ((c = getopt(argc, argv, "nf:a:")) != -1){
     switch(c){
       case 'n':
         newfile = true;
         break;
       case 'f':
         filepath = optarg;
+        break;
+      case 'a':
+        addstring = optarg;
         break;
       case '?':
         printf("Unknown option %c\n", c);
@@ -60,8 +64,6 @@ int main(int argc, char *argv[]) {
     if(create_db_header(&header) == STATUS_ERROR){
       printf("Failed to create DB header.\n");
       return -1;
-    }else{
-      output_file(dbfd, header, employees);
     }
   }else{
     dbfd = open_db_file(filepath);
@@ -80,6 +82,17 @@ int main(int argc, char *argv[]) {
   if(read_employees(dbfd, header, &employees) == STATUS_ERROR){
     printf("Unable to read employees.\n");
     return -1;
+  }
+
+  if(addstring){
+    header->count++;
+    employees = realloc(employees, header->count*(sizeof(struct employee_t)));
+
+    if(add_employee(header, employees, addstring) == STATUS_ERROR){
+      printf("Failed to add employees.\n");
+      return -1;
+    }
+
   }
 
   output_file(dbfd, header, employees);
