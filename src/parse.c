@@ -12,20 +12,45 @@
 #include "parse.h"
 
 void list_employees(struct dbheader_t *dbhdr, struct employee_t *employees) {
-
+  int i = 0;
+  for(; i < dbhdr->count; i++){
+    printf("(%d) %s\n  - Address: %s\n  - Hours: %d\n", (i+1), employees[i].name, employees[i].address, employees[i].hours);
+  }
 }
 
 
-int add_employee(struct dbheader_t *dbhdr, struct employee_t *employees, char *addstring) {
+int add_employee(struct dbheader_t *dbhdr, struct employee_t **employees, char *addstring) {
+  
+  if(dbhdr == NULL) return STATUS_ERROR;
+  if(employees == NULL) return STATUS_ERROR;
+  if(*employees == NULL) return STATUS_ERROR;
+  if(addstring == NULL) return STATUS_ERROR;
+  
+
   char *name = strtok(addstring, ",");
   char *address = strtok(NULL, ",");
   char *hours = strtok(NULL, ",");
 
-  strncpy(employees[dbhdr->count-1].name, name, sizeof(employees[dbhdr->count-1].name));
+  if(name == NULL) return STATUS_ERROR;
+  if(address == NULL) return STATUS_ERROR;
+  if(hours == NULL) return STATUS_ERROR;
+  
+  struct employee_t *empTemp = *employees;
+  empTemp = realloc(empTemp, sizeof(struct employee_t)*(dbhdr->count+1));
+  if(empTemp == NULL){
+    perror("malloc");
+    return STATUS_ERROR;
+  }
 
-  strncpy(employees[dbhdr->count-1].address, address, sizeof(employees[dbhdr->count-1].address));
+  dbhdr->count++;
 
-  employees[dbhdr->count-1].hours = atoi(hours);
+  strncpy(empTemp[dbhdr->count-1].name, name, sizeof(empTemp[dbhdr->count-1].name)-1);
+
+  strncpy(empTemp[dbhdr->count-1].address, address, sizeof(empTemp[dbhdr->count-1].address)-1);
+
+  empTemp[dbhdr->count-1].hours = atoi(hours);
+
+  *employees = empTemp;
 
   return STATUS_SUCCESS;
 }
@@ -65,8 +90,8 @@ int output_file(int fd, struct dbheader_t *dbhdr, struct employee_t *employees) 
   int eCount = dbhdr->count; // preserve real count value before packing
 
   dbhdr->magic = htonl(dbhdr->magic);
-  dbhdr->filesize = htonl(dbhdr->filesize);
-  dbhdr->count = htons(dbhdr->filesize);
+  dbhdr->filesize = htonl(sizeof(struct dbheader_t)+(sizeof(struct employee_t)*eCount));
+  dbhdr->count = htons(dbhdr->count);
   dbhdr->version = htons(dbhdr->version);
 
   lseek(fd, 0, SEEK_SET);
